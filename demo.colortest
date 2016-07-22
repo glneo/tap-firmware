@@ -1,0 +1,55 @@
+/*
+ * Image demo for the TAP (Technology Access Platform)
+ *
+ * Copyright (C) 2016 TheLab.ms
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ */
+
+#include "main.h"
+
+unsigned char red_data;
+unsigned char green_data;
+unsigned char blue_data;
+bool hold_demo = true;
+
+void copy_frame()
+{
+	unsigned int col, row;
+
+	for (row = 0; row < 8; row++)
+		for (col = 0; col < 8; col++)
+		{
+			display_buffer[row][(col * COL_SIZE) + 0] = red_data;
+			display_buffer[row][(col * COL_SIZE) + 1] = green_data;
+			display_buffer[row][(col * COL_SIZE) + 2] = blue_data;
+		}
+}
+
+void loop(void)
+{
+	if (hold_demo) {
+		__delay_cycles(1000); // so transition frame is not longer
+		return;
+	}
+
+	copy_frame();
+
+	hold_demo = true;
+}
+
+/* warning: called from interrupt context */
+void handle_custom_packet(packet_t *p)
+{
+	red_data = p->data[0];
+	green_data = p->data[1];
+	blue_data = p->data[2];
+	hold_demo = false;
+}

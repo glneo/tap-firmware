@@ -1,0 +1,82 @@
+/*
+ * Image demo for the TAP (Technology Access Platform)
+ *
+ * Copyright (C) 2016 TheLab.ms
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ */
+
+#include <font_ascii.h>
+#include "main.h"
+
+#define USER_DATA_SIZE 128
+unsigned char user_data[USER_DATA_SIZE];
+unsigned char text_data[] = "Hello, World!";
+
+void move_text_frame()
+{
+	int time_offset = state.frame_sync % ((USER_DATA_SIZE - 1) * 8);
+	time_offset /= 2;
+
+	unsigned int row, col;
+	unsigned int col_offset = state.x_address * 8;
+
+	for (row = 0; row < 8; row++)
+	{
+		for (col = 0; col < 8; col++)
+		{
+			unsigned char brightness;
+			if (!(time_offset % 2)) /* even */
+			{
+				int string_index = (((time_offset / 2) + col_offset) + col) / 8;
+				int font_index = (((time_offset / 2) + col_offset) + col) % 8;
+				unsigned char row_byte = font_ascii[text_data[string_index]][row];
+				brightness = 20 * ((row_byte >> font_index) & 0x1);
+			}
+			else /* odd */
+			{
+				int string_index = (((time_offset / 2) + col_offset) + col) / 8;
+				int font_index = (((time_offset / 2) + col_offset) + col) % 8;
+				unsigned char row_byte = font_ascii[text_data[string_index]][row];
+				bool first_on = ((row_byte >> font_index) & 0x1);
+				string_index = (((time_offset / 2) + 1 + col_offset) + col) / 8;
+				font_index = (((time_offset / 2) + 1 + col_offset) + col) % 8;
+				row_byte = font_ascii[text_data[string_index]][row];
+				bool next_on = ((row_byte >> font_index) & 0x1);
+
+				if (first_on && next_on)
+					brightness = 20;
+				else if (first_on)
+					brightness = 3;
+				else if (next_on)
+					brightness = 3;
+				else
+					brightness = 0;
+			}
+//			display_buffer[row][(col * COL_SIZE) + 0] = brightness;
+			display_buffer[row][(col * COL_SIZE) + 1] = brightness;
+			display_buffer[row][(col * COL_SIZE) + 2] = brightness;
+		}
+	}
+}
+
+void loop(void)
+{
+	static int counter = 0;
+
+	if (counter++ <= 3)
+	{
+		__delay_cycles(1000); // so transition frame is not longer
+		return;
+	}
+	counter = 0;
+
+	move_text_frame();
+}

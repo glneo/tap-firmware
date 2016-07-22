@@ -1,0 +1,26 @@
+/*
+ * demo.texasflag
+ *
+ * This demo displays a Texas flag.
+ *
+ */
+
+void setup(void)
+{
+	unsigned int col, row;
+
+	for (row = 0; row < 8; row++)
+		for (col = 0; col < 8; col++)
+		{
+			display_buffer[row][(col * COL_SIZE) + 0] = (image_data[row][col] == 1) ? 0 : FULL_INTENSITY;
+			display_buffer[row][(col * COL_SIZE) + 1] = (image_data[row][col] == 2) ? 0 : FULL_INTENSITY;
+			display_buffer[row][(col * COL_SIZE) + 2] = (image_data[row][col] == 3) ? 0 : FULL_INTENSITY;
+		}
+
+	fillRect(display_buffer, 0, 0, 4, 8, 0, 0, FULL_INTENSITY);
+	fillRect(display_buffer, 1, 3, 2, 2, FULL_INTENSITY, FULL_INTENSITY,
+			FULL_INTENSITY);
+	fillRect(display_buffer, 4, 0, 4, 4, FULL_INTENSITY, FULL_INTENSITY,
+			FULL_INTENSITY);
+	fillRect(display_buffer, 4, 4, 4, 4, FULL_INTENSITY, 0, 0);
+}
