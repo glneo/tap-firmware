@@ -1,0 +1,87 @@
+/*
+ * This demo simulates a twinkling star field.
+ *
+ * Copyright (C) 2016 TheLab.ms
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ */
+
+#include "main.h"
+
+#include <stdlib.h>
+
+unsigned int index = 0;
+unsigned char star_intensity[8][8];
+unsigned char star_color[8][8];
+
+// This code is invoked once to initialize the demo...
+void setup(void)
+{
+	int i, j;
+	for (i = 0; i < 8; i++)
+		for (j = 0; j < 8; j++)
+		{
+			star_intensity[i][j] = (rand() % (FULL_INTENSITY - 10) + 10);
+			star_color[i][j] = (rand() % 6) + 1;
+		}
+}
+
+// This code is invoked once each time the LEDs are scanned...
+void loop(void)
+{
+	unsigned char colr;
+	unsigned char intens;
+	int i, j;
+
+	for (i = 0; i < 8; i++)
+		for (j = 0; j < 8; j++)
+		{
+			// Get current intensity
+			colr = star_color[i][j];
+			if (colr & 1)
+				intens = display_buffer[i][j + RED];
+			else if (colr & 2)
+				intens = display_buffer[i][j + GREEN];
+			else
+				intens = display_buffer[i][j + BLUE];
+
+			if (colr & 0x80)
+			{
+				// Intensity decreasing
+				if (intens > 0)
+					intens--;
+				else
+				{
+					// Start increasing
+					intens++;
+					star_color[i][j] = star_color[i][j] & ~0x80;
+				}
+			}
+			else
+			{
+				// Intensity increasing
+				if (intens < star_intensity[i][j])
+					intens++;
+				else
+				{
+					// Start decreasing
+					intens--;
+					star_color[i][j] = star_color[i][j] | 0x80;
+				}
+			}
+
+			if (colr & 1)
+				display_buffer[i][j + RED] = intens;
+			if (colr & 2)
+				display_buffer[i][j + GREEN] = intens;
+			if (colr & 4)
+				display_buffer[i][j + BLUE] = intens;
+		}
+}

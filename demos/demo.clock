@@ -1,0 +1,219 @@
+/*
+ * demo.tommyclock
+ *
+ * This demo is Tommy's clock.
+ *
+ */
+
+#include "main.h"
+
+#define	HOLD_FRAMES 5
+
+int numFrames;
+int seconds;
+int minutes;
+int hours;
+int pm;
+
+static void clear_display()
+{
+	unsigned int col, row;
+
+	for (row = 0; row < 8; row++)
+		for (col = 0; col < 8; col++)
+		{
+			display_buffer[row][(col * COL_SIZE) + 0] = 0;
+			display_buffer[row][(col * COL_SIZE) + 1] = 0;
+			display_buffer[row][(col * COL_SIZE) + 2] = 0;
+		}
+}
+
+// This code is invoked once to initialize the demo...
+void setup(void)
+{
+	numFrames = 0;
+	seconds = 0;
+	minutes = 0;
+	hours = 0;
+	pm = 0;
+}
+
+void displaySeconds(int seconds)
+{
+	// Blink center
+	if ((seconds & 1) != 0)
+	{
+		display_buffer[3][COL3 + RED] = FULL_INTENSITY;
+		display_buffer[3][COL4 + RED] = FULL_INTENSITY;
+		display_buffer[4][COL3 + RED] = FULL_INTENSITY;
+		display_buffer[4][COL4 + RED] = FULL_INTENSITY;
+	}
+
+	if (seconds <= 8)
+	{
+		for (i = 0; i < seconds; i++)
+			display_buffer[i][COL7 + GREEN] = FULL_INTENSITY;
+	}
+	else if (seconds <= 15)
+	{
+		for (i = 0; i < 8; i++)
+			display_buffer[i][COL7 + GREEN] = FULL_INTENSITY;
+		for (i = 0; i < seconds - 7; i++)
+			display_buffer[7][(7 - i) * COL_SIZE + GREEN] = FULL_INTENSITY;
+	}
+	else if (seconds <= 23)
+	{
+		for (i = 0; i < 8; i++)
+			display_buffer[i][COL7 + GREEN] = FULL_INTENSITY;
+		for (i = 1; i < 8; i++)
+			display_buffer[7][(7 - i) * COL_SIZE + GREEN] = FULL_INTENSITY;
+		for (i = 0; i < seconds - 15; i++)
+			display_buffer[i][COL7 + RED] = FULL_INTENSITY;
+	}
+	else if (seconds <= 30)
+	{
+		for (i = 0; i < 8; i++)
+		{
+			display_buffer[i][COL7 + RED] = FULL_INTENSITY;
+			display_buffer[i][COL7 + GREEN] = FULL_INTENSITY;
+		}
+		for (i = 1; i < 8; i++)
+			display_buffer[7][(7 - i) * COL_SIZE + GREEN] = FULL_INTENSITY;
+		for (i = 0; i < seconds - 23; i++)
+			display_buffer[7][(7 - i) * COL_SIZE + RED] = FULL_INTENSITY;
+	}
+	else if (seconds <= 38)
+	{
+		for (i = 0; i < 8; i++)
+			display_buffer[i][COL7 + RED] = FULL_INTENSITY;
+		for (i = seconds - 30; i < 8; i++)
+			display_buffer[i][COL7 + GREEN] = FULL_INTENSITY;
+		for (i = 1; i < 8; i++)
+		{
+			display_buffer[7][(7 - i) * COL_SIZE + RED] = FULL_INTENSITY;
+			display_buffer[7][(7 - i) * COL_SIZE + GREEN] = FULL_INTENSITY;
+		}
+	}
+	else if (seconds <= 45)
+	{
+		for (i = 0; i < 8; i++)
+			display_buffer[i][COL7 + RED] = FULL_INTENSITY;
+		for (i = 1; i < 8; i++)
+			display_buffer[7][(7 - i) * COL_SIZE + RED] = FULL_INTENSITY;
+		for (i = 0; i <= 45 - seconds; i++)
+			display_buffer[7][i * COL_SIZE + GREEN] = FULL_INTENSITY;
+	}
+	else if (seconds <= 53)
+	{
+		for (i = seconds - 45; i < 8; i++)
+			display_buffer[i][COL7 + RED] = FULL_INTENSITY;
+		for (i = 1; i < 8; i++)
+			display_buffer[7][(7 - i) * COL_SIZE + RED] = FULL_INTENSITY;
+	}
+	else
+	{
+		for (i = 0; i <= 60 - seconds; i++)
+			display_buffer[7][i * COL_SIZE + RED] = FULL_INTENSITY;
+	}
+}
+
+void displayHours(int hours)
+{
+	int x1, y1, x2, y2;
+
+	switch (hours)
+	{
+	case 0:
+		x1 = 0; y1 = COL2;
+		x2 = 0; y2 = COL4;
+		break;
+	case 1:
+		x1 = 0; y1 = COL4;
+		x2 = 0; y2 = COL6;
+		break;
+	case 2:
+		x1 = 0; y1 = COL6;
+		x2 = 2; y2 = COL6;
+		break;
+	case 3:
+		x1 = 2; y1 = COL6;
+		x2 = 4; y2 = COL6;
+		break;
+	case 4:
+		x1 = 4; y1 = COL4;
+		x2 = 6; y2 = COL6;
+		break;
+	case 5:
+		x1 = 6; y1 = COL6;
+		x2 = 6; y2 = COL4;
+		break;
+	case 6:
+		x1 = 6; y1 = COL4;
+		x2 = 6; y2 = COL2;
+		break;
+	case 7:
+		x1 = 6; y1 = COL2;
+		x2 = 6; y2 = COL0;
+		break;
+	case 8:
+		x1 = 6; y1 = COL0;
+		x2 = 4; y2 = COL0;
+		break;
+	case 9:
+		x1 = 4; y1 = COL0;
+		x2 = 2; y2 = COL0;
+		break;
+	case 10:
+		x1 = 2; y1 = COL0;
+		x2 = 0; y2 = COL0;
+		break;
+	case 11:
+		x1 = 0; y1 = COL0;
+		x2 = 0; y2 = COL2;
+		break;
+	}
+
+	display_buffer[x1][y1 + RED] = FULL_INTENSITY;
+	display_buffer[x2][y2 + RED] = FULL_INTENSITY;
+	if (pm)
+	{
+		display_buffer[x1][y1 + GREEN] = FULL_INTENSITY;
+		display_buffer[x2][y2 + GREEN] = FULL_INTENSITY;
+	}
+}
+
+// This code is invoked once each time the LEDs are scanned...
+void loop(void)
+{
+	int i;
+
+	if (numFrames > 0)
+	{
+		// Hold current image for some frames
+		numFrames--;
+		return;
+	}
+	numFrames = HOLD_FRAMES;
+
+	seconds++;
+	if (seconds > 59)
+	{
+		seconds = 0;
+		hours++;
+		if (hours > 11)
+		{
+			hours = 0;
+			if (pm == 0)
+				pm = 1;
+			else
+				pm = 0;
+		}
+	}
+
+	// Clear the display
+	clear_display();
+
+	displaySeconds(seconds);
+	displayHours(hours);
+}
+

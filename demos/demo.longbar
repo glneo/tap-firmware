@@ -1,0 +1,130 @@
+/*
+ * Image demo for the TAP (Technology Access Platform)
+ *
+ * Copyright (C) 2016 TheLab.ms
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ */
+
+#include "main.h"
+
+volatile uint8_t loudness = 0;
+volatile bool hold_demo = false;
+
+const unsigned char colour_table[64][3] = {
+	00, 00, 31,
+	00, 02, 31,
+	00, 04, 31,
+	00, 06, 31,
+	00,  8, 31,
+	00, 10, 31,
+	00, 12, 31,
+	00, 14, 31,
+	00, 16, 31,
+	00, 18, 31,
+	00, 20, 31,
+	00, 22, 31,
+	00, 24, 31,
+	00, 26, 31,
+	00, 28, 31,
+	00, 30, 31,
+	00, 31, 30,
+	00, 31, 28,
+	00, 31, 26,
+	00, 31, 24,
+	00, 31, 22,
+	00, 31, 20,
+	00, 31, 18,
+	00, 31, 16,
+	00, 31, 14,
+	00, 31, 12,
+	00, 31, 10,
+	00, 31,  8,
+	00, 31, 06,
+	00, 31, 04,
+	00, 31, 02,
+	00, 31, 00,
+	02, 31, 00,
+	04, 31, 00,
+	06, 31, 00,
+	 8, 31, 00,
+	10, 31, 00,
+	12, 31, 00,
+	14, 31, 00,
+	16, 31, 00,
+	18, 31, 00,
+	20, 31, 00,
+	22, 31, 00,
+	24, 31, 00,
+	26, 31, 00,
+	28, 31, 00,
+	30, 31, 00,
+	31, 30, 00,
+	31, 30, 00,
+	31, 28, 00,
+	31, 26, 00,
+	31, 24, 00,
+	31, 22, 00,
+	31, 20, 00,
+	31, 18, 00,
+	31, 16, 00,
+	31, 14, 00,
+	31, 12, 00,
+	31, 10, 00,
+	31,  8, 00,
+	31, 06, 00,
+	31, 04, 00,
+	31, 02, 00,
+	30, 00, 00,
+};
+
+void copy_frame()
+{
+	unsigned int col, row;
+	unsigned int col_offset = state.x_address * 8;
+
+	for (row = 0; row < 8; row++)
+		for (col = 0; col < 8; col++)
+		{
+			int my_pos = (col + col_offset);
+			if (my_pos >= loudness)
+			{
+				display_buffer[row][(col * COL_SIZE) + RED] = 0;
+				display_buffer[row][(col * COL_SIZE) + GREEN] = 0;
+				display_buffer[row][(col * COL_SIZE) + BLUE] = 0;
+			}
+			else
+			{
+				display_buffer[row][(col * COL_SIZE) + RED] = colour_table[my_pos][RED] / 4;
+				display_buffer[row][(col * COL_SIZE) + GREEN] = colour_table[my_pos][GREEN] / 4;
+				display_buffer[row][(col * COL_SIZE) + BLUE] = colour_table[my_pos][BLUE] / 4;
+			}
+		}
+}
+
+void loop(void)
+{
+	if (hold_demo)
+	{
+		__delay_cycles(1000); // so transition frame is not longer
+		return;
+	}
+
+	copy_frame();
+
+	hold_demo = true;
+}
+
+/* warning: called from interrupt context */
+void handle_custom_packet(packet_t *p)
+{
+	loudness = p->data[0];
+	hold_demo = false;
+}
