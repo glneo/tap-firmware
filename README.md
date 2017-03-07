@@ -74,3 +74,11 @@ synchronizing timing across multiple TAP units when forming a larger single disp
 * uart.c - UART related setup and communication handling.
 
 * usb.c - USB related setup and communication handling.
+
+### Math Library
+At least one of the demo files makes use of a TI Math Library called IQMATHLIB.
+This library is not included in this repository.
+You can download and install this library from TI here:
+http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/IQmathLib/latest/index_FDS.html
+It is linked to this project in the code composer studio configuration file in it's default install location which is ${TI_PRODUCTS_DIR}/msp430/IQMATHLIB_01_10_00_05/
+If your install directory is different or if you wish not to use this library and the demo files that make use of it you will need to modify the code composer studio configuration file accordingly.
