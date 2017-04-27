@@ -47,7 +47,12 @@ struct
 	// col 5
 	{ .port = &P5OUT, .bit = BIT0 }, // red
 	{ .port = &P6OUT, .bit = BIT7 }, // green
+#ifdef TAP_PRE_1_2
 	{ .port = &P6OUT, .bit = BIT6 }, // blue
+#else
+	{ .port = &P2OUT, .bit = BIT4 }, // blue
+#endif
+
 	// col 6
 	{ .port = &P6OUT, .bit = BIT0 }, // red
 	{ .port = &P6OUT, .bit = BIT5 }, // green
@@ -166,7 +171,11 @@ static void init_LEDports()
 	// LED5
 	P5DIR |= BIT0;P5OUT &= ~BIT0;
 	P6DIR |= BIT7; P6OUT &= ~BIT7;
+#ifdef TAP_PRE_1_2
 	P6DIR |= BIT6; P6OUT &= ~BIT6;
+#else
+	P2DIR |= BIT4; P2OUT &= ~BIT4;
+#endif
 
 	// LED6
 	P6DIR |= BIT0; P6OUT &= ~BIT0;
