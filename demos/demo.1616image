@@ -19,7 +19,7 @@
 #define IMAGE_HEIGHT 16
 
 volatile bool hold_demo = true;
-unsigned char image_data[IMAGE_WIDTH][IMAGE_HEIGHT * COL_SIZE];
+unsigned char image_data[IMAGE_WIDTH][IMAGE_HEIGHT][NUM_COLORS];
 
 void copy_frame()
 {
@@ -30,9 +30,9 @@ void copy_frame()
 	for (row = 0; row < 8; row++)
 		for (col = 0; col < 8; col++)
 		{
-			display_buffer[row][(col * COL_SIZE) + 0] = image_data[row + row_offset][((col + col_offset) * COL_SIZE) + 0];
-			display_buffer[row][(col * COL_SIZE) + 1] = image_data[row + row_offset][((col + col_offset) * COL_SIZE) + 1];
-			display_buffer[row][(col * COL_SIZE) + 2] = image_data[row + row_offset][((col + col_offset) * COL_SIZE) + 2];
+			display_buffer[row][col][RED] = image_data[row + row_offset][col + col_offset][RED];
+			display_buffer[row][col][GREEN] = image_data[row + row_offset][col + col_offset][GREEN]];
+			display_buffer[row][col][BLUE] = image_data[row + row_offset][col + col_offset][BLUE];
 		}
 }
 

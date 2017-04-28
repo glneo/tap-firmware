@@ -31,42 +31,24 @@ extern "C"
 #define MAX_DELAY   31
 #define NUM_LEVELS  MAX_DELAY+1
 
-#define	LOW_POWER_DELAY	3	/* Cycles for individual LED ON delay */
-#define	BRIGHT_DELAY	4	/* Adjust when MAX_DELAY is changed */
+#define	LOW_POWER_DELAY 3	/* Cycles for individual LED ON delay */
+#define	BRIGHT_DELAY    4	/* Adjust when MAX_DELAY is changed */
 
-#define	FULL_INTENSITY		MAX_DELAY
-#define	HALF_INTENSITY		(FULL_INTENSITY / 2)
-#define	QUARTER_INTENSITY	(HALF_INTENSITY / 2)
-#define	EIGHTH_INTENSITY	(QUARTER_INTENSITY / 2)
+#define	FULL_INTENSITY          MAX_DELAY
+#define	HALF_INTENSITY          (FULL_INTENSITY / 2)
+#define	QUARTER_INTENSITY       (HALF_INTENSITY / 2)
+#define	EIGHTH_INTENSITY        (QUARTER_INTENSITY / 2)
 
-//*********** For direct access to the display buffer ************************
+//*********** The display buffer ************************
+#define NUM_COLORS      3
 #define	RED             0
 #define	GREEN           1
 #define	BLUE            2
 
-#define NUM_COLS	8
-#define	COL_SIZE        3
-#define	COL0            (0*COL_SIZE)
-#define	COL1		(1*COL_SIZE)
-#define	COL2		(2*COL_SIZE)
-#define	COL3		(3*COL_SIZE)
-#define	COL4		(4*COL_SIZE)
-#define	COL5		(5*COL_SIZE)
-#define	COL6		(6*COL_SIZE)
-#define	COL7		(7*COL_SIZE)
+#define NUM_COLS        8
+#define NUM_ROWS        8
 
-#define NUM_ROWS	8
-#define	ROW_SIZE	(8*COL_SIZE)
-#define	ROW0		(0*ROW_SIZE)
-#define	ROW1		(1*ROW_SIZE)
-#define	ROW2		(2*ROW_SIZE)
-#define	ROW3		(3*ROW_SIZE)
-#define	ROW4		(4*ROW_SIZE)
-#define	ROW5		(5*ROW_SIZE)
-#define	ROW6		(6*ROW_SIZE)
-#define	ROW7		(7*ROW_SIZE)
-
-extern unsigned char display_buffer[NUM_ROWS][NUM_COLS * COL_SIZE];
+extern unsigned char display_buffer[NUM_ROWS][NUM_COLS][NUM_COLORS];
 
 void scan_LEDs();
 void display_init();

@@ -15,7 +15,7 @@
 
 #include "main.h"
 
-#define	HOLD_FRAMES	7
+unsigned int hold_frames = 7;
 
 #define FRAMECOUNT 8
 
@@ -75,22 +75,13 @@ unsigned char frames[5][NUM_ROWS][NUM_COLS] =
 
 void loop(void)
 {
-	static int frame = 0, numFrames = 0;
+	static int frame = 0;
 	int row, col;
 
-	// This code is invoked once each time the LEDs are scanned...
-	if (numFrames > 0)
-	{
-		// Hold current image for some frames
-		numFrames--;
-		return;
-	}
-	numFrames = HOLD_FRAMES;
+	static const int f2f[] = { 1, 2, 3, 4, 3, 2, 1, 0 };
+	for (row = 0; row < 8; row++)
+		for (col = 0; col < 8; col++)
+			display_buffer[row][col][RED] = frames[f2f[frame]][col][row] * FULL_INTENSITY;
 
 	frame = (frame + 1) % FRAMECOUNT;
-
-	static const int f2f[] = { 1, 2, 3, 4, 3, 2, 1, 0 };
-    for (row = 0; row < 8; row++)
-        for (col = 0; col < 8; col++)
-            display_buffer[row][(col * COL_SIZE)] = frames[f2f[frame]][col][row] * FULL_INTENSITY;
 }

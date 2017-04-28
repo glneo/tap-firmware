@@ -15,6 +15,9 @@
 
 #include "main.h"
 
+// Number of frames to delay between each call to loop()
+unsigned int hold_frames = 1;
+
 void setup(void)
 {
 	// This code is invoked once to initialize the demo
@@ -28,5 +31,5 @@ void loop(void)
 /* warning: called from interrupt context */
 void handle_custom_packet(packet_t *p)
 {
-	// This code is invoked when a custom packet is recived
+	// This code is invoked when a custom packet is received
 }

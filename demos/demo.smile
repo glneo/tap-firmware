@@ -34,8 +34,8 @@ void setup(void)
     for (row = 0; row < 8; row++)
         for (col = 0; col < 8; col++)
         {
-            display_buffer[row][(col * COL_SIZE) + 0] = image_data[7 - row][col] * 0;
-            display_buffer[row][(col * COL_SIZE) + 1] = image_data[7 - row][col] * FULL_INTENSITY;
-            display_buffer[row][(col * COL_SIZE) + 2] = image_data[7 - row][col] * FULL_INTENSITY;
+            display_buffer[row][col][RED] = image_data[row][col] * 0;
+            display_buffer[row][col][GREEN] = image_data[row][col] * FULL_INTENSITY;
+            display_buffer[row][col][BLUE] = image_data[row][col] * FULL_INTENSITY;
         }
 }

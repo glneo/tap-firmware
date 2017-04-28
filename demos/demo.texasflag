@@ -1,26 +1,71 @@
 /*
- * demo.texasflag
+ * This demo displays a Texas state flag
  *
- * This demo displays a Texas flag.
+ * Copyright (C) 2016 TheLab.ms
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  */
+
+#include "main.h"
+
+/**
+ * fillRect() - Fill a rectangle in the display buffer with the specified color
+ *
+ * @buffer: the address of the display buffer
+ * @x: the left edge of the rectangle
+ * @y: the top edge of the rectangle
+ * @width: the width of the rectangle
+ * @height: the height of the rectangle
+ * @red: the intensity of the red part of the color
+ * @green: the intensity of the green part of the color
+ * @blue: the intensity of the blue part of the color
+ */
+void fillRect(unsigned char *buffer,
+		int x, int y,
+		int width, int height,
+		unsigned char red, unsigned char green, unsigned char blue)
+{
+	int i, j;
+
+	// Enforce sanity
+	if (x < 0 || x > 7 || y < 0 || y > 7 || width < 0 || height < 0)
+		return;
+
+	// Constrain size
+	if (x + width - 1 > 7)
+		width = 7 - x + 1;
+	if (y + height - 1 > 7)
+		height = 7 - y + 1;
+
+	// Go to the top edge of the rectangle
+	buffer = buffer + y * 8 * 3;
+	for (i = 0; i < height; i++)
+	{
+		// Go to the left edge of the rectangle
+		buffer = buffer + x * 3;
+		for (j = 0; j < width; j++)
+		{
+			*buffer++ = red;
+			*buffer++ = green;
+			*buffer++ = blue;
+		}
+
+		// Go to the next row
+		buffer = buffer + (8 - x - width) * 3;
+	}
+}
 
 void setup(void)
 {
-	unsigned int col, row;
-
-	for (row = 0; row < 8; row++)
-		for (col = 0; col < 8; col++)
-		{
-			display_buffer[row][(col * COL_SIZE) + 0] = (image_data[row][col] == 1) ? 0 : FULL_INTENSITY;
-			display_buffer[row][(col * COL_SIZE) + 1] = (image_data[row][col] == 2) ? 0 : FULL_INTENSITY;
-			display_buffer[row][(col * COL_SIZE) + 2] = (image_data[row][col] == 3) ? 0 : FULL_INTENSITY;
-		}
-
-	fillRect(display_buffer, 0, 0, 4, 8, 0, 0, FULL_INTENSITY);
-	fillRect(display_buffer, 1, 3, 2, 2, FULL_INTENSITY, FULL_INTENSITY,
-			FULL_INTENSITY);
-	fillRect(display_buffer, 4, 0, 4, 4, FULL_INTENSITY, FULL_INTENSITY,
-			FULL_INTENSITY);
-	fillRect(display_buffer, 4, 4, 4, 4, FULL_INTENSITY, 0, 0);
+	fillRect((unsigned char *)display_buffer, 0, 0, 4, 8,              0,              0, FULL_INTENSITY);
+	fillRect((unsigned char *)display_buffer, 1, 3, 2, 2, FULL_INTENSITY, FULL_INTENSITY, FULL_INTENSITY);
+	fillRect((unsigned char *)display_buffer, 4, 0, 4, 4, FULL_INTENSITY, FULL_INTENSITY, FULL_INTENSITY);
+	fillRect((unsigned char *)display_buffer, 4, 4, 4, 4, FULL_INTENSITY,              0,              0);
 }

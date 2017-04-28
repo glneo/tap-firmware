@@ -1,108 +1,148 @@
 /*
- * demo.id
+ * This demo displays the current ID address
  *
- * This demo displays the current ID address.
+ * Copyright (C) 2016 TheLab.ms
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  */
 
-#ifndef DEMO_H_
-#define DEMO_H_
+#include "main.h"
 
-#define	DEMO
+unsigned int hold_frames = 5;
 
-#define	HOLD_FRAMES	5
-
-int				numFrames;
-unsigned char	final[8];
-
-const unsigned char	slash[8] =
+const unsigned char slash[8] =
 	{ 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
 
 const unsigned char dashes[8] =
-{ 0x00, 0x00, 0x07, 0x00, 0x00, 0xE0, 0x00, 0x00 };
+	{ 0x00, 0x00, 0x07, 0x00, 0x00, 0xE0, 0x00, 0x00 };
 
-const unsigned char	y[10][8] =
-	{
-			{ 0x02, 0x05, 0x05, 0x05, 0x02, 0x00, 0x00, 0x00 },	// '0'
-			{ 0x02, 0x03, 0x02, 0x02, 0x07, 0x00, 0x00, 0x00 },	// '1'
-			{ 0x03, 0x04, 0x02, 0x01, 0x07, 0x00, 0x00, 0x00 },	// '2'
-			{ 0x03, 0x04, 0x03, 0x04, 0x03, 0x00, 0x00, 0x00 },	// '3'
-			{ 0x05, 0x05, 0x07, 0x04, 0x04, 0x00, 0x00, 0x00 },	// '4'
-			{ 0x07, 0x01, 0x03, 0x04, 0x03, 0x00, 0x00, 0x00 },	// '5'
-			{ 0x02, 0x01, 0x03, 0x05, 0x02, 0x00, 0x00, 0x00 },	// '6'
-			{ 0x07, 0x04, 0x02, 0x02, 0x02, 0x00, 0x00, 0x00 },	// '7'
-			{ 0x02, 0x05, 0x02, 0x05, 0x02, 0x00, 0x00, 0x00 },	// '8'
-			{ 0x02, 0x05, 0x06, 0x04, 0x02, 0x00, 0x00, 0x00 }	// '9'
-	};
-
-const unsigned char	x[10][8] =
-	{
-			{ 0x00, 0x00, 0x00, 0x40, 0xA0, 0xA0, 0xA0, 0x40 },	// '0'
-			{ 0x00, 0x00, 0x00, 0x40, 0x60, 0x40, 0x40, 0xE0 },	// '1'
-			{ 0x00, 0x00, 0x00, 0x60, 0x80, 0x40, 0x20, 0xE0 },	// '2'
-			{ 0x00, 0x00, 0x00, 0x60, 0x80, 0x60, 0x80, 0x60 },	// '3'
-			{ 0x00, 0x00, 0x00, 0xA0, 0xA0, 0xE0, 0x80, 0x80 },	// '4'
-			{ 0x00, 0x00, 0x00, 0xE0, 0x20, 0x60, 0x80, 0x60 },	// '5'
-			{ 0x00, 0x00, 0x00, 0x40, 0x20, 0x60, 0xA0, 0x60 },	// '6'
-			{ 0x00, 0x00, 0x00, 0xE0, 0x80, 0x40, 0x40, 0x40 },	// '7'
-			{ 0x00, 0x00, 0x00, 0x40, 0xA0, 0x40, 0xA0, 0x40 },	// '8'
-			{ 0x00, 0x00, 0x00, 0x40, 0xA0, 0xC0, 0x80, 0x40 }	// '9'
-	};
-
-void setup(void)
+const unsigned char y[10][8] =
 {
-	// This code is invoked once to initialize the demo...
+	{ 0x02, 0x05, 0x05, 0x05, 0x02, 0x00, 0x00, 0x00 },	// '0'
+	{ 0x02, 0x03, 0x02, 0x02, 0x07, 0x00, 0x00, 0x00 },	// '1'
+	{ 0x03, 0x04, 0x02, 0x01, 0x07, 0x00, 0x00, 0x00 },	// '2'
+	{ 0x03, 0x04, 0x03, 0x04, 0x03, 0x00, 0x00, 0x00 },	// '3'
+	{ 0x05, 0x05, 0x07, 0x04, 0x04, 0x00, 0x00, 0x00 },	// '4'
+	{ 0x07, 0x01, 0x03, 0x04, 0x03, 0x00, 0x00, 0x00 },	// '5'
+	{ 0x02, 0x01, 0x03, 0x05, 0x02, 0x00, 0x00, 0x00 },	// '6'
+	{ 0x07, 0x04, 0x02, 0x02, 0x02, 0x00, 0x00, 0x00 },	// '7'
+	{ 0x02, 0x05, 0x02, 0x05, 0x02, 0x00, 0x00, 0x00 },	// '8'
+	{ 0x02, 0x05, 0x06, 0x04, 0x02, 0x00, 0x00, 0x00 }	// '9'
+};
 
-	bg_red = 0;
-	bg_green = 0;
-	bg_blue = 0;
+const unsigned char x[10][8] =
+{
+	{ 0x00, 0x00, 0x00, 0x40, 0xA0, 0xA0, 0xA0, 0x40 },	// '0'
+	{ 0x00, 0x00, 0x00, 0x40, 0x60, 0x40, 0x40, 0xE0 },	// '1'
+	{ 0x00, 0x00, 0x00, 0x60, 0x80, 0x40, 0x20, 0xE0 },	// '2'
+	{ 0x00, 0x00, 0x00, 0x60, 0x80, 0x60, 0x80, 0x60 },	// '3'
+	{ 0x00, 0x00, 0x00, 0xA0, 0xA0, 0xE0, 0x80, 0x80 },	// '4'
+	{ 0x00, 0x00, 0x00, 0xE0, 0x20, 0x60, 0x80, 0x60 },	// '5'
+	{ 0x00, 0x00, 0x00, 0x40, 0x20, 0x60, 0xA0, 0x60 },	// '6'
+	{ 0x00, 0x00, 0x00, 0xE0, 0x80, 0x40, 0x40, 0x40 },	// '7'
+	{ 0x00, 0x00, 0x00, 0x40, 0xA0, 0x40, 0xA0, 0x40 },	// '8'
+	{ 0x00, 0x00, 0x00, 0x40, 0xA0, 0xC0, 0x80, 0x40 }	// '9'
+};
+
+/**
+ * bltChar() - Block transfer a character glyph to the display buffer
+ *
+ * @buffer: the address of the display buffer
+ * @glyph: the bits for the character
+ * @origin: origin column of the character
+ * @red: the intensity of the red part of the color
+ * @green: the intensity of the green part of the color
+ * @blue: the intensity of the blue part of the color
+ */
+void bltChar(unsigned char *buffer, const unsigned char *glyph, int origin, unsigned char red, unsigned char green, unsigned char blue)
+{
+	unsigned int row;
+	unsigned int col;
+	unsigned int columns;
+	unsigned char glyph_row;
+
+	if (origin < -7 || origin > 7)
+		return;
+
+	columns = 8;
+
+	for (row = 0; row < 8; row++)
+	{
+		glyph_row = *glyph++;
+
+		if (origin < 0)
+		{
+			// Glyph is offset to the left, lose that many columns
+			glyph_row = glyph_row >> abs(origin);
+
+			columns = 8 + origin;
+		}
+		if (origin > 0)
+		{
+			// Glyph is offset to the right, skip that many columns
+			buffer = buffer + 3 * origin;
+			columns = 8 - origin;
+		}
+
+		for (col = 0; col < columns; col++)
+		{
+			if (glyph_row & 1)
+			{
+				// Pixel is foreground color
+				*buffer++ = red;
+				*buffer++ = green;
+				*buffer++ = blue;
+			}
+			else
+				// Advance past clear pixels
+				buffer = buffer + 3;
+
+			glyph_row = glyph_row >> 1;
+		}
+
+		if (origin < 0)
+			// Glyph is offset to the left, leave that many columns on the right
+			buffer = buffer + 3 * abs(origin);
+	}
 }
 
+// This code is invoked once each time the LEDs are scanned...
 void loop(void)
 {
-	// This code is invoked once each time the LEDs are scanned...
-
-	if (numFrames > 0)
-		{
-		// Hold current image for some frames
-		numFrames--;
-		return;
-		}
-	numFrames = HOLD_FRAMES;
-
 	// Clear the display
-	fillRect(display_buffer, 0, 0, 8, 8, 0, 0, 0);
+	memset(display_buffer, 0, sizeof(display_buffer));
 
 	// Render slash
-	txt_red = EIGHTH_INTENSITY;
-	txt_green = EIGHTH_INTENSITY;
-	txt_blue = EIGHTH_INTENSITY;
-	bltChar(display_buffer, slash, 0, 0);
+	unsigned char red = QUARTER_INTENSITY;
+	unsigned char green = QUARTER_INTENSITY;
+	unsigned char blue = QUARTER_INTENSITY;
+	bltChar((unsigned char *) display_buffer, slash, 0, red, green, blue);
 
 	// Implant X and Y addresses
-	if (Marinara.flags & ID_ASSIGNED)
-		{
+	if (state.flags & ID_ASSIGNED)
+	{
 		// Show ID in green
-		txt_red = 0;
-		txt_green = FULL_INTENSITY;
-		txt_blue = 0;
+		red = 0;
+		green = FULL_INTENSITY;
+		blue = 0;
 
-		bltChar(display_buffer, x[Marinara.x_address], 0, 1);
-		bltChar(display_buffer, y[Marinara.y_address], 0, 1);
-		}
+		bltChar((unsigned char *) display_buffer, x[state.x_address], 0, red, green, blue);
+		bltChar((unsigned char *) display_buffer, y[state.y_address], 0, red, green, blue);
+	}
 	else
-		{
+	{
 		// Show unassigned state in yellow
-		txt_red = FULL_INTENSITY;
-		txt_green = FULL_INTENSITY;
-		txt_blue = 0;
+		red = FULL_INTENSITY;
+		green = FULL_INTENSITY;
+		blue = 0;
 
-		bltChar(display_buffer, dashes, 0, 1);
-		}
-
-	txt_red = FULL_INTENSITY;
-	txt_green = FULL_INTENSITY;
-	txt_blue = FULL_INTENSITY;
+		bltChar((unsigned char *) display_buffer, dashes, 0, red, green, blue);
+	}
 }
-
-#endif /* DEMO_H_ */

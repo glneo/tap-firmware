@@ -1,166 +1,93 @@
 /*
- * demo.fader
+ * This demo fades between high and low intensities
  *
- * This demo fades between high and low intensities.
+ * Copyright (C) 2016 TheLab.ms
  *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  */
 
-#ifndef DEMO_H_
-#define DEMO_H_
+#include "main.h"
 
-#define	DEMO
+#define PAUSE 20
 
-#define	HOLD_FRAMES	0
+unsigned int color;
+unsigned int index;
 
-int	numFrames;
-
-#define PAUSE		20
-
-unsigned int	color;
-unsigned int	index;
-
+// This code is invoked once to initialize the demo...
 void setup(void)
 {
-	// This code is invoked once to initialize the demo...
-
-	numFrames = 0;
 	color = 0;
 	index = 0;
 }
 
+// This code is invoked once each time the LEDs are scanned...
 void loop(void)
 {
-	// This code is invoked once each time the LEDs are scanned...
-
-	unsigned char	new_blue;
-	unsigned char	new_green;
-	unsigned char	new_red;
-	unsigned int	col;
-	unsigned int	row;
-	unsigned int	x;
-	unsigned int	new_intensity;
-
-	if (numFrames > 0)
-		{
-		// Hold current image for some frames
-		numFrames--;
-		return;
-		}
-	numFrames = HOLD_FRAMES;
+	unsigned char new_blue;
+	unsigned char new_green;
+	unsigned char new_red;
+	unsigned int row, col;
+	unsigned int new_intensity;
 
 	if (index == 0)
-		{
+	{
 		// Next color
 		color++;
 		if (color > 7)
 			color = 1;
 
 		index = (FULL_INTENSITY - 1) * 2 + PAUSE * 3;
-		}
+	}
 
 	if ((index > (FULL_INTENSITY - 1) * 2 + PAUSE * 2) || (index <= PAUSE))
-		// Start off and end dim
-		new_intensity = 1;
+		new_intensity = 1; // Start off and end dim
 	else if (index > (FULL_INTENSITY - 1) + PAUSE * 2)
-		// Fade up
-		new_intensity = (FULL_INTENSITY - 1) * 2 + PAUSE * 2 - index + 1;
+		new_intensity = (FULL_INTENSITY - 1) * 2 + PAUSE * 2 - index + 1; // Fade up
 	else if (index > (FULL_INTENSITY - 1) + PAUSE)
-		// Full brightness
-		new_intensity = FULL_INTENSITY;
+		new_intensity = FULL_INTENSITY; // Full brightness
 	else
-		// Fade down
-		new_intensity = index - PAUSE + 1;
+		new_intensity = index - PAUSE + 1; // Fade down
 	index--;
 
-	if (color & 1)
-		new_red = new_intensity;
-	else
-		new_red = 0;
-	if (color & 2)
-		new_green = new_intensity;
-	else
-		new_green = 0;
-	if (color & 4)
-		new_blue = new_intensity;
-	else
-		new_blue = 0;
+	new_red = (color & 1) * new_intensity;
+	new_green = (color & 2) * new_intensity;
+	new_blue = (color & 4) * new_intensity;
+
 	for (row = 0; row < 8; row++)
-		{
+	{
 		// Set up left band at lowest on intensity
-		x = row * 8 * 3;
-		if (new_red)
-			{
-			display_buffer[x] = 1;
-			display_buffer[x+3] = 1;
-			}
-		else
-			{
-			display_buffer[x] = 0;
-			display_buffer[x+3] = 0;
-			}
-		if (new_green)
-			{
-			display_buffer[x+1] = 1;
-			display_buffer[x+4] = 1;
-			}
-		else
-			{
-			display_buffer[x+1] = 0;
-			display_buffer[x+4] = 0;
-			}
-		if (new_blue)
-			{
-			display_buffer[x+2] = 1;
-			display_buffer[x+5] = 1;
-			}
-		else
-			{
-			display_buffer[x+2] = 0;
-			display_buffer[x+5] = 0;
-			}
+		display_buffer[row][0][RED] = new_red ? 1 : 0;
+		display_buffer[row][1][RED] = new_red ? 1 : 0;
+
+		display_buffer[row][0][GREEN] = new_green ? 1 : 0;
+		display_buffer[row][1][GREEN] = new_green ? 1 : 0;
+
+		display_buffer[row][0][BLUE] = new_blue ? 1 : 0;
+		display_buffer[row][1][BLUE] = new_blue ? 1 : 0;
 
 		// Set up the middle
 		for (col = 2; col < 6; col++)
-			{
-			x = (row * 8 + col) * 3;
-			display_buffer[x] = new_red;
-			display_buffer[x+1] = new_green;
-			display_buffer[x+2] = new_blue;
-			}
+		{
+			display_buffer[row][col][RED] = new_red;
+			display_buffer[row][col][GREEN] = new_green;
+			display_buffer[row][col][BLUE] = new_blue;
+		}
 
 		// Set up right band at highest on intensity
-		x = (row * 8 + 6) * 3;
-		if (new_red)
-			{
-			display_buffer[x] = FULL_INTENSITY;
-			display_buffer[x+3] = FULL_INTENSITY;
-			}
-		else
-			{
-			display_buffer[x] = 0;
-			display_buffer[x+3] = 0;
-			}
-		if (new_green)
-			{
-			display_buffer[x+1] = FULL_INTENSITY;
-			display_buffer[x+4] = FULL_INTENSITY;
-			}
-		else
-			{
-			display_buffer[x+1] = 0;
-			display_buffer[x+4] = 0;
-			}
-		if (new_blue)
-			{
-			display_buffer[x+2] = FULL_INTENSITY;
-			display_buffer[x+5] = FULL_INTENSITY;
-			}
-		else
-			{
-			display_buffer[x+2] = 0;
-			display_buffer[x+5] = 0;
-			}
-		}
-}
+		display_buffer[row][6][RED] = new_red ? FULL_INTENSITY : 0;
+		display_buffer[row][7][RED] = new_red ? FULL_INTENSITY : 0;
 
-#endif /* DEMO_H_ */
+		display_buffer[row][6][GREEN] = new_green ? FULL_INTENSITY : 0;
+		display_buffer[row][7][GREEN] = new_green ? FULL_INTENSITY : 0;
+
+		display_buffer[row][6][BLUE] = new_blue ? FULL_INTENSITY : 0;
+		display_buffer[row][7][BLUE] = new_blue ? FULL_INTENSITY : 0;
+	}
+}

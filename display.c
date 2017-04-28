@@ -15,7 +15,7 @@
 
 #include "main.h"
 
-unsigned char display_buffer[NUM_ROWS][NUM_COLS * COL_SIZE];
+unsigned char display_buffer[NUM_ROWS][NUM_COLS][NUM_COLORS];
 
 // Maps columns to hardware
 struct

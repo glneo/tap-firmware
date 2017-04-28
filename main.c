@@ -15,7 +15,9 @@
 
 #include "main.h"
 
-volatile bool run_program = false;
+volatile bool run_program = true;
+
+unsigned int __attribute__((weak)) hold_frames = 1;
 
 /* Can be overridden by user program */
 void __attribute__((weak)) setup(void) {}
@@ -29,7 +31,7 @@ void __attribute__((weak)) handle_custom_packet(packet_t *p) {}
 void main_loop(void)
 {
 	// Step the demo
-//	if (run_program)
+	if (run_program && !(state.frame_sync % hold_frames))
 		loop();
 
 	state.frame_sync++;

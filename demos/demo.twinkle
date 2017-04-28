@@ -1,5 +1,5 @@
 /*
- * This demo simulates a twinkling star field.
+ * This demo simulates a twinkling star field
  *
  * Copyright (C) 2016 TheLab.ms
  *
@@ -46,11 +46,11 @@ void loop(void)
 			// Get current intensity
 			colr = star_color[i][j];
 			if (colr & 1)
-				intens = display_buffer[i][j + RED];
+				intens = display_buffer[i][j][RED];
 			else if (colr & 2)
-				intens = display_buffer[i][j + GREEN];
+				intens = display_buffer[i][j][GREEN];
 			else
-				intens = display_buffer[i][j + BLUE];
+				intens = display_buffer[i][j][BLUE];
 
 			if (colr & 0x80)
 			{
@@ -78,10 +78,10 @@ void loop(void)
 			}
 
 			if (colr & 1)
-				display_buffer[i][j + RED] = intens;
+				display_buffer[i][j][RED] = intens;
 			if (colr & 2)
-				display_buffer[i][j + GREEN] = intens;
+				display_buffer[i][j][GREEN] = intens;
 			if (colr & 4)
-				display_buffer[i][j + BLUE] = intens;
+				display_buffer[i][j][BLUE] = intens;
 		}
 }

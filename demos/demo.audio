@@ -18,7 +18,7 @@
 volatile uint8_t loudness[64];
 volatile bool hold_demo = false;
 
-const unsigned char colour_table[64][3] = {
+const unsigned char colour_table[16][3] = {
 	0, 0, 4,
 	0, 1, 4,
 	0, 2, 4,
@@ -51,15 +51,15 @@ void copy_frame()
 			int my_pos = (col + col_offset);
 			if (my_up >= loudness[my_pos])
 			{
-				display_buffer[row][(col * COL_SIZE) + RED] = 0;
-				display_buffer[row][(col * COL_SIZE) + GREEN] = 0;
-				display_buffer[row][(col * COL_SIZE) + BLUE] = 0;
+				display_buffer[row][col][RED] = 0;
+				display_buffer[row][col][GREEN] = 0;
+				display_buffer[row][col][BLUE] = 0;
 			}
 			else
 			{
-				display_buffer[row][(col * COL_SIZE) + RED] = colour_table[my_up][RED];
-				display_buffer[row][(col * COL_SIZE) + GREEN] = colour_table[my_up][GREEN];
-				display_buffer[row][(col * COL_SIZE) + BLUE] = colour_table[my_up][BLUE];
+				display_buffer[row][col][RED] = colour_table[my_up][RED];
+				display_buffer[row][col][GREEN] = colour_table[my_up][GREEN];
+				display_buffer[row][col][BLUE] = colour_table[my_up][BLUE];
 			}
 		}
 	}

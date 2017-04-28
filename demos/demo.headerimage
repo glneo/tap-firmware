@@ -310,15 +310,13 @@ static const unsigned char image_data[IMAGE_FRAMES][IMAGE_WIDTH][IMAGE_HEIGHT * 
 	},
 };
 
-#define	HOLD_FRAMES 20
+unsigned int hold_frames = 20
 
-unsigned int delay_count;
 unsigned int next_frame;
 
+// This code is invoked once to initialize the demo...
 void setup(void)
 {
-	// This code is invoked once to initialize the demo...
-	delay_count = 0;
 	next_frame = 0;
 }
 
@@ -331,22 +329,14 @@ void copy_frame(const unsigned char data[IMAGE_WIDTH][IMAGE_HEIGHT * COL_SIZE])
 	for (row = 0; row < 8; row++)
 		for (col = 0; col < 8; col++)
 		{
-			display_buffer[row][(col * COL_SIZE) + 0] = image_data[row + row_offset][((col + col_offset) * COL_SIZE) + 0];
-			display_buffer[row][(col * COL_SIZE) + 1] = image_data[row + row_offset][((col + col_offset) * COL_SIZE) + 1];
-			display_buffer[row][(col * COL_SIZE) + 2] = image_data[row + row_offset][((col + col_offset) * COL_SIZE) + 2];
+			display_buffer[row][col][RED] = image_data[row + row_offset][col + col_offset][RED];
+			display_buffer[row][col][GREEN] = image_data[row + row_offset][col + col_offset][GREEN];
+			display_buffer[row][col][BLUE] = image_data[row + row_offset][col + col_offset][BLUE];
 		}
 }
 
 void loop(void)
 {
-	// Hold current image for some frames
-	if (delay_count --> 0)
-	{
-		__delay_cycles(30000); // so transition frame is not longer
-		return;
-	}
-	delay_count = HOLD_FRAMES;
-
 	copy_frame(image_data[next_frame]);
 
 	next_frame++;

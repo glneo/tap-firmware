@@ -43,9 +43,9 @@ void loop(void)
 			v += _Qsin(_Qsqrt(_Qmpy(x, x) + _Qmpy(y, y) + _Q(1.0f)) + u_time);
 			v = _Qdiv2(v);
 
-			display_buffer[row][(col * COL_SIZE) + 0] = 1 * 20;
-			display_buffer[row][(col * COL_SIZE) + 1] = _Qint(_Qmpy(_Qsin(_Qmpy(_Q(M_PI), v)), 20));
-			display_buffer[row][(col * COL_SIZE) + 2] = _Qint(_Qmpy(_Qcos(_Qmpy(_Q(M_PI), v)), 20));
+			display_buffer[row][col][RED] = 1 * 20;
+			display_buffer[row][col][GREEN] = _Qint(_Qmpy(_Qsin(_Qmpy(_Q(M_PI), v)), 20));
+			display_buffer[row][col][BLUE] = _Qint(_Qmpy(_Qcos(_Qmpy(_Q(M_PI), v)), 20));
 		}
 	}
 }

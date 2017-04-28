@@ -13,14 +13,17 @@
  * General Public License for more details.
  */
 
-#include <font_ascii.h>
 #include "main.h"
+
+#include <font_ascii.h>
+
+unsigned int hold_frames = 4;
 
 #define USER_DATA_SIZE 128
 unsigned char user_data[USER_DATA_SIZE];
 unsigned char text_data[] = "Hello, World!";
 
-void move_text_frame()
+void loop(void)
 {
 	int time_offset = state.frame_sync % ((USER_DATA_SIZE - 1) * 8);
 	time_offset /= 2;
@@ -60,23 +63,9 @@ void move_text_frame()
 				else
 					brightness = 0;
 			}
-//			display_buffer[row][(col * COL_SIZE) + 0] = brightness;
-			display_buffer[row][(col * COL_SIZE) + 1] = brightness;
-			display_buffer[row][(col * COL_SIZE) + 2] = brightness;
+//			display_buffer[row][col][RED] = brightness;
+			display_buffer[row][col][GREEN] = brightness;
+			display_buffer[row][col][BLUE] = brightness;
 		}
 	}
-}
-
-void loop(void)
-{
-	static int counter = 0;
-
-	if (counter++ <= 3)
-	{
-		__delay_cycles(1000); // so transition frame is not longer
-		return;
-	}
-	counter = 0;
-
-	move_text_frame();
 }

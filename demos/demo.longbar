@@ -96,15 +96,15 @@ void copy_frame()
 			int my_pos = (col + col_offset);
 			if (my_pos >= loudness)
 			{
-				display_buffer[row][(col * COL_SIZE) + RED] = 0;
-				display_buffer[row][(col * COL_SIZE) + GREEN] = 0;
-				display_buffer[row][(col * COL_SIZE) + BLUE] = 0;
+				display_buffer[row][col][RED] = 0;
+				display_buffer[row][col][GREEN] = 0;
+				display_buffer[row][col][BLUE] = 0;
 			}
 			else
 			{
-				display_buffer[row][(col * COL_SIZE) + RED] = colour_table[my_pos][RED] / 4;
-				display_buffer[row][(col * COL_SIZE) + GREEN] = colour_table[my_pos][GREEN] / 4;
-				display_buffer[row][(col * COL_SIZE) + BLUE] = colour_table[my_pos][BLUE] / 4;
+				display_buffer[row][col][RED] = colour_table[my_pos][RED] / 4;
+				display_buffer[row][col][GREEN] = colour_table[my_pos][GREEN] / 4;
+				display_buffer[row][col][BLUE] = colour_table[my_pos][BLUE] / 4;
 			}
 		}
 }

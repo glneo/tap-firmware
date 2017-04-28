@@ -27,9 +27,9 @@ void copy_frame()
 	for (row = 0; row < 8; row++)
 		for (col = 0; col < 8; col++)
 		{
-			display_buffer[row][(col * COL_SIZE) + 0] = red_data;
-			display_buffer[row][(col * COL_SIZE) + 1] = green_data;
-			display_buffer[row][(col * COL_SIZE) + 2] = blue_data;
+			display_buffer[row][col][RED] = red_data;
+			display_buffer[row][col][GREEN] = green_data;
+			display_buffer[row][col][BLUE] = blue_data;
 		}
 }
 
